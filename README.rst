@@ -136,3 +136,14 @@ Feel free to email me if you have any request.
 .. _Icons: https://github.com/copycat-killer/dots/tree/master/.fonts
 .. _Debian: http://weiwu.sdf.org/100921.html
 .. _Ubuntu: https://wiki.ubuntu.com/Fonts#Enabling_Bitmapped_Fonts
+
+##<a name="dot"/>TODO
+####* automatic change backgrounds
+####* fix disk usage display
+####* move taskbar to bottom and can hide by shortcuts
+####* add mutt support
+
+##<a name="dot"/>BUG
+####* can't start software goagent used "spawn_with_shell" command
+####* can't start software emacs,pcmanfm without a urxvt window stay with
+####* urxvt can't fillfull on the bottom of screen

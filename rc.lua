@@ -63,6 +63,7 @@ beautiful.init(os.getenv("HOME") .. "/.config/awesome/themes/powerarrow-darker/t
 modkey     = "Mod4"
 altkey     = "Mod1"
 terminal   = "urxvtc" or "xterm"
+--terminal   = "xfce4-terminal"
 editor     = os.getenv("EDITOR") or "nano" or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -77,7 +78,7 @@ gui_proxy = "goagent"
 mail       = terminal .. " -e mutt "
 iptraf     = terminal .. " -g 180x54-20+34 -e sudo iptraf-ng -i all "
 --musicplr   = terminal .. " -g 130x34-320+16 -e ncmpcpp "
-musiplr   = terminal .. " -e ncmpcpp "
+musicplr   = terminal .. " -e ncmpcpp "
 
 local layouts = {
     awful.layout.suit.floating,
@@ -555,7 +556,7 @@ globalkeys = awful.util.table.join(
 )
 
 clientkeys = awful.util.table.join(
-    awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
+    awful.key({ modkey,           }, "f", function (c) c.fullscreen = not c.fullscreen  end),
     awful.key({ modkey            }, "q", function () awful.util.spawn(browser) end),
     awful.key({ modkey            }, "p", function () awful.util.spawn(filemanager) end),
     awful.key({ modkey            }, "i", function () awful.util.spawn(gui_editor2) end),
