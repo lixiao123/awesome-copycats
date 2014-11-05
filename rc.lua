@@ -540,8 +540,12 @@ globalkeys = awful.util.table.join(
 
     -- User programs
     awful.key({ modkey }, "q", function () awful.util.spawn(browser) end),
+    awful.key({ modkey }, "p", function () awful.util.spawn(filemanager) end),
+    awful.key({ modkey }, "i", function () awful.util.spawn(gui_editor2) end),
+    awful.key({ modkey }, "e", function () awful.util.spawn(gui_editor) end),
+    awful.key({ modkey }, "d", function () awful.util.spawn_with_shell("~/bin/doubanfm-qt &") end),
+    awful.key({ modkey }, "g", function () awful.util.spawn_with_shell("python ~/Software/goagent/local/goagent-gtk.py &") end),
     awful.key({ modkey }, "i", function () awful.util.spawn(browser2) end),
-    awful.key({ modkey }, "s", function () awful.util.spawn(gui_editor) end),
     awful.key({ modkey }, "g", function () awful.util.spawn(graphics) end),
 
     -- Prompt
@@ -557,12 +561,6 @@ globalkeys = awful.util.table.join(
 
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f", function (c) c.fullscreen = not c.fullscreen  end),
-    awful.key({ modkey            }, "q", function () awful.util.spawn(browser) end),
-    awful.key({ modkey            }, "p", function () awful.util.spawn(filemanager) end),
-    awful.key({ modkey            }, "i", function () awful.util.spawn(gui_editor2) end),
-    awful.key({ modkey            }, "e", function () awful.util.spawn(gui_editor) end),
-    awful.key({ modkey            }, "d", function () awful.util.spawn_with_shell("~/bin/doubanfm-qt &") end),
-    awful.key({ modkey            }, "g", function () awful.util.spawn_with_shell("python ~/Software/goagent/local/goagent-gtk.py &") end),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),

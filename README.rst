@@ -143,7 +143,6 @@ Feel free to email me if you have any request.
 ####* move taskbar to bottom and can hide by shortcuts
 ####* add mutt support
 
-##<a name="dot"/>BUG
-####* can't start software goagent used "spawn_with_shell" command
-####* can't start software emacs,pcmanfm without a urxvt window stay with
-####* urxvt can't fillfull on the bottom of screen
+#### ~~can't start software goagent used "spawn_with_shell" command~~
+#### ~~can't start software emacs,pcmanfm without a urxvt window stay with~~
+#### urxvt can't fillfull on the bottom of screen
