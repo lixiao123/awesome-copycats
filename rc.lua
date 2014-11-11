@@ -638,17 +638,32 @@ awful.rules.rules = {
     { rule = { class = "URxvt" },
           properties = { opacity = 0.99 } },
 
+    { rule = { class = "OSD Lyrics" },
+          properties = { floating = true } },
+
     { rule = { class = "MPlayer" },
           properties = { floating = true } },
 
     { rule = { class = "Dwb" },
           properties = { tag = tags[1][1] } },
 
+    { rule = { class = "doubanfm-qt" },
+          properties = { floating = true } },
+
+    { rule = { class = "goagent-gtk.py" },
+          properties = { floating = true } },
+
     { rule = { class = "Iron" },
           properties = { tag = tags[1][1] } },
 
     { rule = { instance = "plugin-container" },
           properties = { tag = tags[1][1] } },
+	
+	{ rule = { class = "Firefox" },
+		  properties = { tag = tags[1][1] } },
+
+	{ rule = { class = "Vlc" },
+		  properties = { tag = tags[1][3] } },
 
 	  { rule = { class = "Gimp" },
      	    properties = { tag = tags[1][4] } },
@@ -656,6 +671,15 @@ awful.rules.rules = {
     { rule = { class = "Gimp", role = "gimp-image-window" },
           properties = { maximized_horizontal = true,
                          maximized_vertical = true } },
+
+    { rule = { class = "wicd-client" },
+          properties = { floating = true } },
+
+    { rule = { class = "SMPlayer" },
+          properties = { floating = true } },
+
+    { rule = { class = "StarDict" },
+          properties = { floating = true } },
 }
 -- }}}
 
