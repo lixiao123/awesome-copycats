@@ -60,30 +60,37 @@ beautiful.init(os.getenv("HOME") .. "/.config/awesome/themes/holo/theme.lua")
 -- common
 modkey     = "Mod4"
 altkey     = "Mod1"
-terminal   = "urxvtc" or "xterm"
+--terminal   = "urxvtc" or "xterm"
+terminal   = "xfce4-terminal"
 editor     = os.getenv("EDITOR") or "nano" or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
 -- user defined
-browser    = "dwb"
+browser    = "firefox-bin"
+filemanager = "pcmanfm"
+gui_editor = "emacs"
+gui_editor2 = "sublime"
 browser2   = "iron"
 gui_editor = "gvim"
 graphics   = "gimp"
+gui_proxy = "goagent"
+mail       = terminal .. " -e mutt "
+iptraf     = terminal .. " -g 180x54-20+34 -e sudo iptraf-ng -i all "
 musicplr   = terminal .. " -e ncmpcpp "
 
 local layouts = {
     awful.layout.suit.floating,
-    lain.layout.uselesstile,
+    awful.layout.suit.tile,
+    awful.layout.suit.tile.bottom,
     awful.layout.suit.fair,
-    lain.layout.uselesstile.left,
-    lain.layout.uselesstile.top
+    awful.layout.suit.fair.horizontal,
 }
 -- }}}
 
 -- {{{ Tags
 tags = {
-   names = { " WEB ", " TERMINAL ", " FILES ", " OTHER " },
-   layout = { layouts[1], layouts[3], layouts[2], layouts[4] }
+   names = { "web", "terminal", "mail", "file", "other"},
+   layout = { layouts[1], layouts[3], layouts[1], layouts[1], layouts[4] }
 }
 for s = 1, screen.count() do
    tags[s] = awful.tag(tags.names, s, tags.layout)
@@ -232,6 +239,17 @@ batwidget = lain.widgets.bat({
     end
 })
 
+-- MEM
+memicon = wibox.widget.imagebox(beautiful.widget_mem)
+mem_widget = lain.widgets.mem({
+    settings = function()
+        widget:set_text(" " .. mem_now.used .. "MB ")
+    end
+})
+memwidget = wibox.widget.background()
+memwidget:set_widget(mem_widget)
+memwidget:set_bgimage(beautiful.widget_bg)
+
 -- ALSA volume bar
 myvolumebar = lain.widgets.alsabar({
     card   = "0",
@@ -268,6 +286,23 @@ cpuwidget:set_widget(cpu_widget)
 cpuwidget:set_bgimage(beautiful.widget_bg)
 cpu_icon = wibox.widget.imagebox()
 cpu_icon:set_image(beautiful.cpu)
+
+-- Coretemp
+tempicon = wibox.widget.imagebox(beautiful.widget_temp)
+tempwidget = lain.widgets.temp({
+    settings = function()
+        widget:set_text(" " .. coretemp_now .. "°C ")
+    end
+})
+
+-- / fs
+fsicon = wibox.widget.imagebox(beautiful.widget_hdd)
+fswidget = lain.widgets.fs({
+    settings  = function()
+        widget:set_text(" " .. fs_now.used .. "% ")
+    end
+})
+fswidgetbg = wibox.widget.background(fswidget, "#313131")
 
 -- Net
 netdown_icon = wibox.widget.imagebox()
@@ -382,9 +417,9 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the upper left
     local left_layout = wibox.layout.fixed.horizontal()
     left_layout:add(first)
+    left_layout:add(mylauncher)
     left_layout:add(mytaglist[s])
     left_layout:add(spr_small)
-    left_layout:add(mylayoutbox[s])
     left_layout:add(mypromptbox[s])
 
     -- Widgets that are aligned to the upper right
@@ -404,13 +439,35 @@ for s = 1, screen.count() do
     right_layout:add(spr_very_small)
     right_layout:add(volumewidget)
     right_layout:add(spr_left)
+    right_layout:add(bar)
+    right_layout:add(netdown_icon)
+    right_layout:add(networkwidget)
+    right_layout:add(netup_icon)
+    right_layout:add(bottom_bar)
+    right_layout:add(memicon)
+    right_layout:add(memwidget)
+    right_layout:add(bar)
+    right_layout:add(cpu_icon)
+    right_layout:add(cpuwidget)
+    right_layout:add(bottom_bar)
+    right_layout:add(calendar_icon)
+    right_layout:add(calendarwidget)
+    right_layout:add(bottom_bar)
+    right_layout:add(clock_icon)
+    right_layout:add(clockwidget)
+    right_layout:add(last)
+    right_layout:add(mylayoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
+    layout:set_middle(mytasklist[s])
     layout:set_right(right_layout)
 
     mywibox[s]:set_widget(layout)
+
+    --去掉底边的wibox
+    --[[
 
     -- Create the bottom wibox
     mybottomwibox[s] = awful.wibox({ position = "bottom", screen = s, border_width = 0, height = 32 })
@@ -439,7 +496,6 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     bottom_layout = wibox.layout.align.horizontal()
     bottom_layout:set_left(bottom_left_layout)
-    bottom_layout:set_middle(mytasklist[s])
     bottom_layout:set_right(bottom_right_layout)
     mybottomwibox[s]:set_widget(bottom_layout)
 
@@ -449,6 +505,7 @@ for s = 1, screen.count() do
 
     -- Create a borderbox above the bottomwibox
     lain.widgets.borderbox(mybottomwibox[s], s, { position = "top", color = "#0099CC" } )
+--]]
 end
 -- }}}
 
@@ -476,18 +533,19 @@ globalkeys = awful.util.table.join(
     awful.key({ altkey }, "Right", function () lain.util.tag_view_nonempty(1) end),
 
     -- Default client focus
-    awful.key({ altkey }, "k",
+    awful.key({ modkey }, "k",
         function ()
             awful.client.focus.byidx( 1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ altkey }, "j",
+    awful.key({ modkey }, "j",
         function ()
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end),
 
     -- By direction client focus
+    --[[
     awful.key({ modkey }, "j",
         function()
             awful.client.focus.bydirection("down")
@@ -509,6 +567,7 @@ globalkeys = awful.util.table.join(
             if client.focus then client.focus:raise() end
         end),
 
+        ]]--
     -- Show Menu
     awful.key({ modkey }, "w",
         function ()
@@ -528,8 +587,10 @@ globalkeys = awful.util.table.join(
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
     awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
+    awful.key({ modkey, "Control" }, "j", awful.tag.viewnext),
+    awful.key({ modkey, "Control" }, "k", awful.tag.viewprev),
+    awful.key({ altkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
+    awful.key({ altkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
         function ()
@@ -559,6 +620,10 @@ globalkeys = awful.util.table.join(
     -- Widgets popups
     awful.key({ altkey,           }, "c",      function () lain.widgets.calendar:show(7) end),
     awful.key({ altkey,           }, "w",      function () myweather.show(7) end),
+    awful.key({ altkey,           }, "h",      function () fswidget.show(7) end),
+
+	-- xlockmore
+	awful.key({ altkey, "Control" }, "l",      function () awful.util.spawn_with_shell("xlock") end),
 
     -- ALSA volume control
     awful.key({ altkey }, "Up",
@@ -609,7 +674,12 @@ globalkeys = awful.util.table.join(
 
     -- User programs
     awful.key({ modkey }, "q", function () awful.util.spawn(browser) end),
-    awful.key({ modkey }, "i", function () awful.util.spawn(browser2) end),
+	awful.key({ modkey }, "p", function () awful.util.spawn_with_shell("dbus-launch pcmanfm &") end),
+    awful.key({ modkey }, "i", function () awful.util.spawn(gui_editor2) end),
+    awful.key({ modkey }, "e", function () awful.util.spawn(gui_editor) end),
+    awful.key({ modkey }, "d", function () awful.util.spawn_with_shell("~/bin/doubanfm-qt &") end),
+    awful.key({ modkey }, "g", function () awful.util.spawn_with_shell("python ~/Software/goagent/local/goagent-gtk.py &") end),
+    --awful.key({ modkey }, "i", function () awful.util.spawn(browser2) end),
     awful.key({ modkey }, "s", function () awful.util.spawn(gui_editor) end),
     awful.key({ modkey }, "g", function () awful.util.spawn(graphics) end),
 
@@ -645,7 +715,7 @@ clientkeys = awful.util.table.join(
 )
 
 -- Bind all key numbers to tags.
--- be careful: we use keycodes to make it works on any keyboard layout.
+-- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
     globalkeys = awful.util.table.join(globalkeys,
@@ -711,7 +781,16 @@ awful.rules.rules = {
     { rule = { class = "URxvt" },
           properties = { opacity = 0.99 } },
 
+    { rule = { class = "OSD Lyrics" },
+          properties = { floating = true } },
+
     { rule = { class = "MPlayer" },
+          properties = { floating = true } },
+
+    { rule = { class = "doubanfm-qt" },
+          properties = { floating = true } },
+
+    { rule = { class = "goagent-gtk.py" },
           properties = { floating = true } },
 
     { rule = { class = "Dwb" },
@@ -729,6 +808,15 @@ awful.rules.rules = {
     { rule = { class = "Gimp", role = "gimp-image-window" },
           properties = { maximized_horizontal = true,
                          maximized_vertical = true } },
+
+    { rule = { class = "wicd-client" },
+          properties = { floating = true } },
+
+    { rule = { class = "SMPlayer" },
+          properties = { floating = true } },
+
+    { rule = { class = "StarDict" },
+          properties = { floating = true } },
 }
 -- }}}
 
