@@ -61,7 +61,8 @@ beautiful.init(os.getenv("HOME") .. "/.config/awesome/themes/holo/theme.lua")
 modkey     = "Mod4"
 altkey     = "Mod1"
 --terminal   = "urxvtc" or "xterm"
-terminal   = "xfce4-terminal"
+--terminal   = "xfce4-terminal"
+terminal   = "terminator"
 editor     = os.getenv("EDITOR") or "nano" or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -521,7 +522,7 @@ root.buttons(awful.util.table.join(
 globalkeys = awful.util.table.join(
     -- Take a screenshot
     -- https://github.com/copycat-killer/dots/blob/master/bin/screenshot
-    awful.key({ altkey }, "p", function() os.execute("screenshot") end),
+    --awful.key({ altkey }, "p", function() os.execute("screenshot") end),
 
     -- Tag browsing
     awful.key({ modkey }, "Left",   awful.tag.viewprev       ),
@@ -620,8 +621,8 @@ globalkeys = awful.util.table.join(
 
     -- Widgets popups
     awful.key({ altkey,           }, "c",      function () lain.widgets.calendar:show(7) end),
-    awful.key({ altkey,           }, "w",      function () myweather.show(7) end),
-    awful.key({ altkey,           }, "h",      function () fswidget.show(7) end),
+    --awful.key({ altkey,           }, "w",      function () myweather.show(7) end),
+    --awful.key({ altkey,           }, "h",      function () fswidget.show(7) end),
 
 	-- xlockmore
 	awful.key({ altkey, "Control" }, "l",      function () awful.util.spawn_with_shell("xlock") end),
